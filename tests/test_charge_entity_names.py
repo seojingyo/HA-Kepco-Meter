@@ -36,13 +36,9 @@ def test_korean_charge_entity_names_remain_complete_on_device_page() -> None:
     translations = cast(
         "dict[str, Any]",
         json.loads(
-            (
-                ROOT
-                / "custom_components"
-                / "kepco_on"
-                / "translations"
-                / "ko.json"
-            ).read_text(encoding="utf-8")
+            (ROOT / "custom_components" / "kepco_on" / "translations" / "ko.json").read_text(
+                encoding="utf-8"
+            )
         ),
     )
     sensors = cast(
@@ -51,10 +47,7 @@ def test_korean_charge_entity_names_remain_complete_on_device_page() -> None:
     )
     actual = {key: sensors[key]["name"] for key in VISIBLE_NAMES}
 
-    assert {
-        key: name.replace(" ", " ")
-        for key, name in actual.items()
-    } == VISIBLE_NAMES
+    assert {key: name.replace(" ", " ") for key, name in actual.items()} == VISIBLE_NAMES
     for key in PREFIXED_KEYS:
         assert actual[key].startswith(f"{DEVICE_NAME} ")
         assert not actual[key].startswith(f"{DEVICE_NAME} ")
