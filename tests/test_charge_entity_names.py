@@ -8,6 +8,7 @@ from typing import Any, cast
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVICE_NAME = "전기요금"
+NO_BREAK_SPACE = chr(0xA0)
 VISIBLE_NAMES = {
     "electricity_subtotal": "전기요금 계",
     "base_charge": "전기요금 상세 기본요금",
@@ -46,8 +47,12 @@ def test_korean_charge_entity_names_remain_complete_on_device_page() -> None:
         translations["entity"]["sensor"],
     )
     actual = {key: sensors[key]["name"] for key in VISIBLE_NAMES}
+    visible_actual = {
+        key: name.replace(NO_BREAK_SPACE, " ") for key, name in actual.items()
+    }
 
-    assert {key: name.replace(" ", " ") for key, name in actual.items()} == VISIBLE_NAMES
+    assert visible_actual == VISIBLE_NAMES
+    protected_prefix = f"{DEVICE_NAME}{NO_BREAK_SPACE}"
     for key in PREFIXED_KEYS:
-        assert actual[key].startswith(f"{DEVICE_NAME} ")
+        assert actual[key].startswith(protected_prefix)
         assert not actual[key].startswith(f"{DEVICE_NAME} ")
